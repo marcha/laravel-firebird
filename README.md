@@ -1,7 +1,8 @@
 laravel-firebird
 ================
 
-To use this package:
+This package adds support for the Firebird PDO driver in Laravel applications. 
+Support for Laravel 5.5 to 8.x with PHP 7.1+ and Firebird 1.5, 2.5, 3.0
 
 Installation
 ------------
@@ -10,6 +11,7 @@ Install the Firebird PDO driver for PHP.
 
 Mariuz's Blog has a very good step by step on this:
 http://mapopa.blogspot.com/2009/04/php5-and-firebird-pdo-on-ubuntu-hardy.html
+
 
 Install using composer:
 
@@ -152,3 +154,8 @@ Added the following features:
     version (to use the correct grammar).
 
  
+## Credits
+This package was originally forked from [sim1984/laravel-firebird](https://github.com/sim1984/laravel-firebird).
+
+## License
+Licensed under the [MIT](https://choosealicense.com/licenses/mit/) licence.
