@@ -4,10 +4,10 @@ namespace Firebird;
 
 use Doctrine\Instantiator\Exception\InvalidArgumentException;
 use Illuminate\Database\Connectors\Connector;
-use Illuminate\Database\Connectors\ConnectorInterface;
+
 use PDO;
 
-class FirebirdConnector extends Connector implements ConnectorInterface
+class FirebirdConnector extends Connector
 {
 
     /**
@@ -62,5 +62,4 @@ class FirebirdConnector extends Connector implements ConnectorInterface
 
         return $dsn;
     }
-
 }

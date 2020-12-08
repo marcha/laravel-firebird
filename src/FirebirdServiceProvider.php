@@ -22,5 +22,4 @@ class FirebirdServiceProvider extends ServiceProvider
         });
         $this->app->bind('db.connector.firebird', FirebirdConnector::class);
     }
-
 }
