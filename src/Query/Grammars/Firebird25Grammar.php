@@ -175,48 +175,6 @@ class Firebird25Grammar extends Grammar
     }
 
     /**
-     * Compile an update statement into SQL.
-     *
-     * @param \Illuminate\Database\Query\Builder $query
-     * @param array $values
-     * @return string
-     */
-    public function compileUpdate(Builder $query, $values)
-    {
-        $table = $this->wrapTable($query->from);
-
-        // Each one of the columns in the update statements needs to be wrapped in the
-        // keyword identifiers, also a place-holder needs to be created for each of
-        // the values in the list of bindings so we can make the sets statements.
-        $columns = $this->compileUpdateColumns($values);
-
-
-        $where = $this->compileUpdateWheres($query);
-
-        return trim("UPDATE {$table} SET {$columns} $where");
-    }
-
-    /**
-     * Compile the columns for the update statement.
-     *
-     * @param array $values
-     * @return string
-     */
-    protected function compileUpdateColumns($values)
-    {
-        $columns = [];
-
-        // When gathering the columns for an update statement, we'll wrap each of the
-        // columns and convert it to a parameter value. Then we will concatenate a
-        // list of the columns that can be added into this update query clauses.
-        foreach ($values as $key => $value) {
-            $columns[] = $this->wrap($key) . ' = ' . $this->parameter($value);
-        }
-
-        return implode(', ', $columns);
-    }
-
-    /**
      * Compile the additional where clauses for updates with joins.
      *
      * @param \Illuminate\Database\Query\Builder $query
@@ -258,5 +216,4 @@ class Firebird25Grammar extends Grammar
 
         return '"' . str_replace('"', '""', $value) . '"';
     }
-
 }
