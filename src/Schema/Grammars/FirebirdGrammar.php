@@ -15,7 +15,7 @@ class FirebirdGrammar extends Grammar
      *
      * @var array
      */
-    protected $modifiers = ['Charset', 'Collate', 'Increment', 'Nullable', 'Default'];
+    protected $modifiers = ['Charset', 'Default', 'Nullable', 'Collate', 'Increment'];
 
     /**
      * The columns available as serials.
@@ -759,5 +759,4 @@ class FirebirdGrammar extends Grammar
 
         return $this->wrap($this->tablePrefix . $sequence, true);
     }
-
 }
