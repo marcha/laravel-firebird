@@ -26,12 +26,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Firebird\\": "src/Fierbird"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Firebird\\Tests\\": "tests/"
+            "Firebird\\": "src/Fierbird/"
         }
     },
     "extra": {
