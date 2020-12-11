@@ -637,7 +637,7 @@ class FirebirdGrammar extends Grammar
     public function compileSequenceForTable(Blueprint $blueprint, Fluent $command)
     {
 
-        $sequence = $this->wrap(substr('seq_' . $blueprint->getTable(), 0, 31));
+        $sequence = strtoupper(substr('SEQ_' . $blueprint->getTable(), 0, 31));
 
         return "CREATE SEQUENCE {$sequence}";
     }
@@ -651,8 +651,8 @@ class FirebirdGrammar extends Grammar
      */
     public function compileDropSequenceForTable(Blueprint $blueprint, Fluent $command)
     {
-        $sequenceName = substr('seq_' . $blueprint->getTable(), 0, 31);
-        $sequence = $this->wrap($sequenceName);
+        $sequenceName = substr('SEQ_' . $blueprint->getTable(), 0, 31);
+        $sequence = strtoupper($sequenceName);
 
         $sql = 'EXECUTE BLOCK' . "\n";
         $sql .= 'AS' . "\n";
@@ -673,12 +673,12 @@ class FirebirdGrammar extends Grammar
     public function compileTriggerForAutoincrement(Blueprint $blueprint, Fluent $command)
     {
         $table = $this->wrapTable($blueprint);
-        $trigger = $this->wrap(substr('tr_' . $blueprint->getTable() . '_bi', 0, 31));
-        $column = $this->wrap($command->columnname);
-        $sequence = $this->wrap(substr('seq_' . $blueprint->getTable(), 0, 31));
+        $trigger = strtoupper(substr('TR_' . $blueprint->getTable() . '_BI', 0, 31));
+        $column = strtoupper($command->columnname);
+        $sequence = strtoupper(substr('SEQ_' . $blueprint->getTable(), 0, 31));
 
         $sql = "CREATE OR ALTER TRIGGER {$trigger} FOR {$table}\n";
-        $sql .= "ACTIVE BEFORE INSERT\n";
+        $sql .= "ACTIVE BEFORE INSERT  POSITION 0\n";
         $sql .= "AS\n";
         $sql .= "BEGIN\n";
         $sql .= "  IF (NEW.{$column} IS NULL) THEN \n";
