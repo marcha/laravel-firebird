@@ -216,4 +216,17 @@ class Firebird25Grammar extends Grammar
 
         return '"' . str_replace('"', '""', $value) . '"';
     }
+
+    /**
+     * Compile an exists statement into SQL.
+     *
+     * @param  \Illuminate\Database\Query\Builder  $query
+     * @return string
+     */
+    public function compileExists(Builder $query)
+    {
+        $select = $this->compileSelect($query);
+        return "SELECT 1 as \"exists\" FROM RDB\$DATABASE WHERE EXISTS ({$select})";
+        //  return "select exists({$select}) as {$this->wrap('exists')}";
+    }
 }
