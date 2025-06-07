@@ -198,20 +198,6 @@ class Firebird25Grammar extends Grammar
     return $baseWhere;
   }
 
-  /**
-   * Compile a date based where clause.
-   *
-   * @param string $type
-   * @param \Illuminate\Database\Query\Builder $query
-   * @param array $where
-   * @return string
-   */
-  protected function dateBasedWhere($type, Builder $query, $where)
-  {
-    $value = $this->parameter($where['value']);
-
-    return 'EXTRACT(' . $type . ' FROM ' . $this->wrap($where['column']) . ') ' . $where['operator'] . ' ' . $value;
-  }
 
   /**
    * Wrap a single string in keyword identifiers.
@@ -249,5 +235,73 @@ class Firebird25Grammar extends Grammar
     $value = preg_replace('/\blower\s*\(\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*\)/', 'lower("$1")', $value);
 
     return $value;
+  }
+
+  /**
+   * Compile a "where date" clause.
+   */
+  public function whereDate(Builder $query, $where)
+  {
+    return $this->dateBasedWhere('DATE', $query, $where);
+  }
+
+  /**
+   * Compile a "where time" clause.
+   */
+  public function whereTime(Builder $query, $where)
+  {
+    return $this->dateBasedWhere('TIME', $query, $where);
+  }
+
+  /**
+   * Compile a "where day" clause.
+   */
+  public function whereDay(Builder $query, $where)
+  {
+    return $this->dateBasedWhere('DAY', $query, $where);
+  }
+
+  /**
+   * Compile a "where month" clause.
+   */
+  public function whereMonth(Builder $query, $where)
+  {
+    return $this->dateBasedWhere('MONTH', $query, $where);
+  }
+
+  /**
+   * Compile a "where year" clause.
+   */
+  public function whereYear(Builder $query, $where)
+  {
+    return $this->dateBasedWhere('YEAR', $query, $where);
+  }
+
+  /**
+   * Compile a date based where clause.
+   */
+  protected function dateBasedWhere($type, Builder $query, $where)
+  {
+    $value = $this->parameter($where['value']);
+
+    switch ($type) {
+      case 'DATE':
+        return "CAST({$this->wrap($where['column'])} AS DATE) {$where['operator']} {$value}";
+
+      case 'TIME':
+        return "CAST({$this->wrap($where['column'])} AS TIME) {$where['operator']} {$value}";
+
+      case 'DAY':
+        return "EXTRACT(DAY FROM {$this->wrap($where['column'])}) {$where['operator']} {$value}";
+
+      case 'MONTH':
+        return "EXTRACT(MONTH FROM {$this->wrap($where['column'])}) {$where['operator']} {$value}";
+
+      case 'YEAR':
+        return "EXTRACT(YEAR FROM {$this->wrap($where['column'])}) {$where['operator']} {$value}";
+
+      default:
+        return "CAST({$this->wrap($where['column'])} AS DATE) {$where['operator']} {$value}";
+    }
   }
 }
