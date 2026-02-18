@@ -131,6 +131,31 @@ EOT;
   }
 
   /**
+   * Compile the query to determine the indexes for a table (Laravel 12+).
+   *
+   * @param  string  $schema
+   * @param  string  $table
+   * @return string
+   */
+  public function compileIndexes($schema, $table)
+  {
+    $table = $this->quoteString(strtoupper($table));
+
+    return "SELECT "
+      . "TRIM(i.RDB\$INDEX_NAME) AS \"name\", "
+      . "TRIM(i.RDB\$RELATION_NAME) AS \"table\", "
+      . "CASE WHEN i.RDB\$UNIQUE_FLAG = 1 THEN 1 ELSE 0 END AS \"unique\", "
+      . "CASE WHEN rc.RDB\$CONSTRAINT_TYPE = 'PRIMARY KEY' THEN 1 ELSE 0 END AS \"primary\", "
+      . "LIST(TRIM(s.RDB\$FIELD_NAME), ',') AS \"columns\", "
+      . "'btree' AS \"type\" "
+      . "FROM RDB\$INDICES i "
+      . "JOIN RDB\$INDEX_SEGMENTS s ON s.RDB\$INDEX_NAME = i.RDB\$INDEX_NAME "
+      . "LEFT JOIN RDB\$RELATION_CONSTRAINTS rc ON rc.RDB\$INDEX_NAME = i.RDB\$INDEX_NAME "
+      . "WHERE TRIM(i.RDB\$RELATION_NAME) = {$table} "
+      . "GROUP BY i.RDB\$INDEX_NAME, i.RDB\$RELATION_NAME, i.RDB\$UNIQUE_FLAG, rc.RDB\$CONSTRAINT_TYPE";
+  }
+
+  /**
    * Compile the query to determine if a table exists.
    *
    * @return string
