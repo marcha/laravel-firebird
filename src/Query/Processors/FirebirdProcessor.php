@@ -127,4 +127,19 @@ class FirebirdProcessor extends Processor
       ];
     }, $results);
   }
+
+  public function processIndexes($results)
+  {
+    return array_map(function ($result) {
+      $result = (object) $result;
+
+      return [
+        'name'    => strtolower(trim($result->name)),
+        'columns' => array_map('trim', explode(',', $result->columns)),
+        'type'    => strtolower($result->type ?? 'btree'),
+        'unique'  => (bool) $result->unique,
+        'primary' => (bool) $result->primary,
+      ];
+    }, $results);
+  }
 }
