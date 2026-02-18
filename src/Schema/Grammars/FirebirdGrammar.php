@@ -31,8 +31,9 @@ class FirebirdGrammar extends Grammar
    * @return string
    */
 
-  public function compileColumns($table)
+  public function compileColumns($schemaOrTable, $table = null)
   {
+    $table = $table ?? $schemaOrTable;
     $str = <<<EOT
 select
 f.rdb\$field_name as "name",
@@ -134,8 +135,12 @@ EOT;
    *
    * @return string
    */
-  public function compileTableExists()
+  public function compileTableExists($schema = null, $table = null)
   {
+    if ($table !== null) {
+      return 'SELECT rdb\$RELATION_NAME FROM rdb\$RELATIONS WHERE rdb\$RELATION_NAME = '
+        . $this->quoteString(strtoupper($table));
+    }
     return 'SELECT * FROM rdb\$RELATIONS WHERE rdb\$RELATION_NAME = ?';
   }
 

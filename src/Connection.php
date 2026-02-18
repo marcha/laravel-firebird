@@ -105,7 +105,12 @@ class Connection extends \Illuminate\Database\Connection
    */
   protected function getDefaultSchemaGrammar()
   {
-    return $this->withTablePrefix(new SchemaGrammar);
+    $reflection = new \ReflectionClass(\Illuminate\Database\Grammar::class);
+    $constructor = $reflection->getConstructor();
+    $grammar = ($constructor && $constructor->getNumberOfParameters() > 0)
+      ? new SchemaGrammar($this)
+      : new SchemaGrammar();
+    return $this->withTablePrefix($grammar);
   }
 
   /**
