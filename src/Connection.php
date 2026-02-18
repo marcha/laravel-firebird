@@ -107,10 +107,12 @@ class Connection extends \Illuminate\Database\Connection
   {
     $reflection = new \ReflectionClass(\Illuminate\Database\Grammar::class);
     $constructor = $reflection->getConstructor();
-    $grammar = ($constructor && $constructor->getNumberOfParameters() > 0)
-      ? new SchemaGrammar($this)
-      : new SchemaGrammar();
-    return $this->withTablePrefix($grammar);
+    if ($constructor && $constructor->getNumberOfParameters() > 0) {
+      // Laravel 12+: Grammar receives Connection in constructor (table prefix accessible via connection)
+      // withTablePrefix no longer exists on Connection
+      return new SchemaGrammar($this);
+    }
+    return $this->withTablePrefix(new SchemaGrammar());
   }
 
   /**
