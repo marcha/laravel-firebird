@@ -1,7 +1,6 @@
 <?php namespace Firebird\Schema;
 
 use Illuminate\Database\Schema\Blueprint as BaseBlueprint;
-use \Illuminate\Database\Schema\Grammars\Grammar;
 
 class Blueprint extends BaseBlueprint
 {
@@ -77,13 +76,13 @@ class Blueprint extends BaseBlueprint
 
     /**
      * Add the commands that are implied by the blueprint.
+     * Laravel 12+: grammar je dostupan kao $this->grammar (postavlja ga bazni konstruktor).
      *
-     * @param  \Illuminate\Database\Schema\Grammars\Grammar  $grammar
      * @return void
      */
-    protected function addImpliedCommands(Grammar $grammar)
+    protected function addImpliedCommands()
     {
-        parent::addImpliedCommands($grammar);
+        parent::addImpliedCommands();
 
         if (!$this->use_identity) {
             $this->addSequence();

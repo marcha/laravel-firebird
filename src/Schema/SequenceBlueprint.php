@@ -52,7 +52,7 @@ class SequenceBlueprint
      * @param \Closure|null $callback
      * @return void
      */
-    public function __construct($sequence, Closure $callback = null)
+    public function __construct($sequence, ?Closure $callback = null)
     {
         $this->sequence = $sequence;
 

@@ -41,7 +41,7 @@ class Builder extends BaseBuilder
      * @param string $procedure
      * @param array $values
      */
-    public function executeProcedure($procedure, array $values = null)
+    public function executeProcedure($procedure, ?array $values = null)
     {
         if (!$values) {
             $values = [];
@@ -62,7 +62,7 @@ class Builder extends BaseBuilder
      *
      * @return mixed
      */
-    public function executeFunction($function, array $values = null)
+    public function executeFunction($function, ?array $values = null)
     {
         if (!$values) {
             $values = [];

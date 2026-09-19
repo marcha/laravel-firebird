@@ -13,13 +13,15 @@ class Builder extends BaseBuilder
      * @param \Closure|null $callback
      * @return \Firebird\Schema\Blueprint
      */
-    protected function createBlueprint($table, Closure $callback = null)
+    protected function createBlueprint($table, ?Closure $callback = null)
     {
+        $connection = $this->connection;
+
         if (isset($this->resolver)) {
-            return call_user_func($this->resolver, $table, $callback);
+            return call_user_func($this->resolver, $connection, $table, $callback);
         }
 
-        return new Blueprint($table, $callback);
+        return new Blueprint($connection, $table, $callback);
     }
 
     /**
@@ -29,7 +31,7 @@ class Builder extends BaseBuilder
      * @param \Closure|null $callback
      * @return \Firebird\Schema\SequenceBlueprint
      */
-    protected function createSequenceBlueprint($sequence, Closure $callback = null)
+    protected function createSequenceBlueprint($sequence, ?Closure $callback = null)
     {
         if (isset($this->resolver)) {
             return call_user_func($this->resolver, $sequence, $callback);
@@ -69,7 +71,7 @@ class Builder extends BaseBuilder
      * @param \Closure $callback
      * @return void
      */
-    public function createSequence($sequence, Closure $callback = null)
+    public function createSequence($sequence, ?Closure $callback = null)
     {
         $seqprint = $this->createSequenceBlueprint($sequence);
 

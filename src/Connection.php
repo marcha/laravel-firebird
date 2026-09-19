@@ -29,7 +29,9 @@ class Connection extends \Illuminate\Database\Connection
   protected function getEngineVersion()
   {
     if (!$this->engine_version) {
-      $this->engine_version = isset($this->config['engine_version']) ? $this->config['engine_version'] : null;
+      // 'engine_version' je izvorni ključ paketa; 'version' je ključ koji koriste
+      // aplikacione konfiguracije (config/database.php). Bez njih ide upit na server.
+      $this->engine_version = $this->config['engine_version'] ?? $this->config['version'] ?? null;
     }
     if (!$this->engine_version) {
       $sql = "SELECT RDB\$GET_CONTEXT(?, ?) FROM RDB\$DATABASE";
@@ -105,14 +107,8 @@ class Connection extends \Illuminate\Database\Connection
    */
   protected function getDefaultSchemaGrammar()
   {
-    $reflection = new \ReflectionClass(\Illuminate\Database\Grammar::class);
-    $constructor = $reflection->getConstructor();
-    if ($constructor && $constructor->getNumberOfParameters() > 0) {
-      // Laravel 12+: Grammar receives Connection in constructor (table prefix accessible via connection)
-      // withTablePrefix no longer exists on Connection
-      return new SchemaGrammar($this);
-    }
-    return $this->withTablePrefix(new SchemaGrammar());
+    // Laravel 12+: Grammar prima Connection u konstruktoru (prefiks tabele ide preko konekcije).
+    return new SchemaGrammar($this);
   }
 
   /**
@@ -145,7 +141,7 @@ class Connection extends \Illuminate\Database\Connection
    * @param array $values
    * @return mixed
    */
-  public function executeFunction($function, array $values = null)
+  public function executeFunction($function, ?array $values = null)
   {
     $query = $this->getQueryBuilder();
 
@@ -158,7 +154,7 @@ class Connection extends \Illuminate\Database\Connection
    * @param string $procedure
    * @param array $values
    */
-  public function executeProcedure($procedure, array $values = null)
+  public function executeProcedure($procedure, ?array $values = null)
   {
     $query = $this->getQueryBuilder();
 
