@@ -72,11 +72,11 @@ class Firebird25Grammar extends Grammar
    * @param array $values
    * @return string
    */
-  public function compileExecFunction(Builder $query, $function, array $values = null)
+  public function compileExecFunction(Builder $query, $function, ?array $values = null)
   {
     $function = $this->wrap($function);
 
-    return "SELECT  {$function} (" . $this->parameterize($values) . ") AS VAL FROM RDB\$DATABASE";
+    return "SELECT  {$function} (" . $this->parameterize($values ?? []) . ") AS VAL FROM RDB\$DATABASE";
   }
 
   /**
@@ -87,11 +87,12 @@ class Firebird25Grammar extends Grammar
    * @param array $values
    * @return string
    */
-  public function compileExecProcedure(Builder $query, $procedure, array $values = null)
+  public function compileExecProcedure(Builder $query, $procedure, ?array $values = null)
   {
     $procedure = $this->wrap($procedure);
 
-    return "EXECUTE PROCEDURE {$$procedure} (" . $this->parameterize($values) . ')';
+    // ranije {$$procedure} (promenljiva promenljiva) - bug, uvek bi pukao
+    return "EXECUTE PROCEDURE {$procedure} (" . $this->parameterize($values ?? []) . ')';
   }
 
   /**
