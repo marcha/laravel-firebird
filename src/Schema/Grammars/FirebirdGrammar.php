@@ -162,11 +162,12 @@ EOT;
    */
   public function compileTableExists($schema = null, $table = null)
   {
+    // single-quoted '\$' bi ostavio literalni backslash u SQL-u (-104 Token unknown)
     if ($table !== null) {
-      return 'SELECT rdb\$RELATION_NAME FROM rdb\$RELATIONS WHERE rdb\$RELATION_NAME = '
+      return "SELECT rdb\$RELATION_NAME FROM rdb\$RELATIONS WHERE rdb\$RELATION_NAME = "
         . $this->quoteString(strtoupper($table));
     }
-    return 'SELECT * FROM rdb\$RELATIONS WHERE rdb\$RELATION_NAME = ?';
+    return "SELECT * FROM rdb\$RELATIONS WHERE rdb\$RELATION_NAME = ?";
   }
 
   /**
@@ -189,7 +190,7 @@ EOT;
    */
   public function compileColumnExists($table)
   {
-    return 'SELECT TRIM(rdb\$FIELD_NAME) AS "column_name" '
+    return "SELECT TRIM(rdb\$FIELD_NAME) AS \"column_name\" "
       . "FROM RDB\$RELATION_FIELDS WHERE RDB\$RELATION_NAME = '$table'";
   }
 
@@ -200,7 +201,7 @@ EOT;
    */
   public function compileSequenceExists()
   {
-    return 'SELECT * FROM rdb\$GENERATORS WHERE rdb\$GENERATOR_NAME = ?';
+    return "SELECT * FROM rdb\$GENERATORS WHERE rdb\$GENERATOR_NAME = ?";
   }
 
   /**
