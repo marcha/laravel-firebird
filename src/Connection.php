@@ -169,8 +169,10 @@ class Connection extends \Illuminate\Database\Connection
    */
   public function beginTransaction()
   {
-    if ($this->transactions == 0 && $this->pdo->getAttribute(PDO::ATTR_AUTOCOMMIT) == 1) {
-      $this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, 0);
+    // getPdo(), ne $this->pdo: Laravel otvara konekciju lenjo i dok prvi upit ne ode
+    // $this->pdo je Closure (transakcija kao prva operacija u zahtevu).
+    if ($this->transactions == 0 && $this->getPdo()->getAttribute(PDO::ATTR_AUTOCOMMIT) == 1) {
+      $this->getPdo()->setAttribute(PDO::ATTR_AUTOCOMMIT, 0);
     }
     parent::beginTransaction();
   }
@@ -183,8 +185,8 @@ class Connection extends \Illuminate\Database\Connection
   public function commit()
   {
     parent::commit();
-    if ($this->transactions == 0 && $this->pdo->getAttribute(PDO::ATTR_AUTOCOMMIT) == 0) {
-      $this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, 1);
+    if ($this->transactions == 0 && $this->getPdo()->getAttribute(PDO::ATTR_AUTOCOMMIT) == 0) {
+      $this->getPdo()->setAttribute(PDO::ATTR_AUTOCOMMIT, 1);
     }
   }
 
@@ -198,8 +200,8 @@ class Connection extends \Illuminate\Database\Connection
   public function rollBack($toLevel = null)
   {
     parent::rollBack($toLevel);
-    if ($this->transactions == 0 && $this->pdo->getAttribute(PDO::ATTR_AUTOCOMMIT) == 0) {
-      $this->pdo->setAttribute(PDO::ATTR_AUTOCOMMIT, 1);
+    if ($this->transactions == 0 && $this->getPdo()->getAttribute(PDO::ATTR_AUTOCOMMIT) == 0) {
+      $this->getPdo()->setAttribute(PDO::ATTR_AUTOCOMMIT, 1);
     }
   }
 }
